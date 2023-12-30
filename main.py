@@ -14,7 +14,6 @@ from config import ACCOUNTS, DEPOSIT_ADDRESSES
 from modules_settings import *
 from settings import (
     RANDOM_WALLET,
-    USE_EXCHANGE_DEPOSIT,
     QUANTITY_THREADS,
     THREAD_SLEEP_FROM,
     THREAD_SLEEP_TO
@@ -36,13 +35,14 @@ def get_module():
     return result
 
 
-def get_wallets():
-    if USE_EXCHANGE_DEPOSIT:
+def get_wallets(module: str):
+    if module == "route":
         account_with_deposit_address = dict(zip(ACCOUNTS, DEPOSIT_ADDRESSES))
 
         if len(DEPOSIT_ADDRESSES) == 0:
-            logger.error("deposit_addesses.txt is empty!")
-
+            logger.error("deposit_addresses.txt is empty!")
+            return
+        
         if len(ACCOUNTS) == 0:
             logger.error("accounts.txt is empty!")
         
@@ -77,8 +77,7 @@ async def run_route(account_id, key, deposit_address):
         await pancake_swap_bnb_usdt(account_id, key)
         await stargate_bridge(account_id, key)
         await merkly_gas_refuel(account_id, key)
-        if USE_EXCHANGE_DEPOSIT:
-            await transfer_usdt(account_id, key, deposit_address)
+        await transfer_usdt(account_id, key, deposit_address)
         await pancake_swap_usdt_ageur(account_id, key)
         await angle_bridge(account_id, key)
         await sushi_swap_aguer_to_matic(account_id, key)
@@ -100,7 +99,7 @@ def main():
     module = get_module()
     module_function = _async_run_route if module =="route" else _async_run_warmup
 
-    wallets = get_wallets()
+    wallets = get_wallets(module)
 
     if RANDOM_WALLET:
         random.shuffle(wallets)
