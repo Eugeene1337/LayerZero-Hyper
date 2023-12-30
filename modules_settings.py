@@ -12,7 +12,7 @@ async def pancake_swap_bnb_usdt(account_id, key):
     min_amount = 0
     max_amount = 0
     decimal = 18
-    slippage = 1
+    slippage = 2
 
     pancake = Pancake(account_id, key)
     await pancake.swap(from_token, to_token, min_amount, max_amount, decimal, slippage, all_amount, min_percent, max_percent)
@@ -73,7 +73,7 @@ async def pancake_swap_usdt_ageur(account_id, key):
     min_amount = 1
     max_amount = 1
     decimal = 18
-    slippage = 1
+    slippage = 2
 
     pancake = Pancake(account_id, key)
     await pancake.swap(from_token, to_token, min_amount, max_amount, decimal, slippage, all_amount, min_percent, max_percent)
