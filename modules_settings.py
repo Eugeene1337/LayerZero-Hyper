@@ -20,7 +20,7 @@ async def pancake_swap_bnb_usdt(account_id, key):
 
 async def stargate_bridge(account_id, key):
     bridge_list = [
-        {"from_chain": "bsc", "from_token": "USDT", "to_chain": "base", "to_token": "USDC", "gas_on_destionation": 0.0015},
+        {"from_chain": "bsc", "from_token": "USDT", "to_chain": "base", "to_token": "USDC", "gas_on_destionation": 0.0017},
         {"from_chain": "base", "from_token": "USDC", "to_chain": "bsc", "to_token": "USDT", "gas_on_destionation": 0},
         {"from_chain": "bsc", "from_token": "USDT", "to_chain": "base", "to_token": "USDC", "gas_on_destionation": 0},
         {"from_chain": "base", "from_token": "USDC", "to_chain": "bsc", "to_token": "USDT", "gas_on_destionation": 0},
