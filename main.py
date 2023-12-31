@@ -54,6 +54,9 @@ def get_wallets(module: str):
             } for _id, key in enumerate(account_with_deposit_address, start=1)
         ]
     else:
+        if len(ACCOUNTS) == 0:
+            logger.error("accounts.txt is empty!")
+            
         wallets = [
             {
                 "id": _id,

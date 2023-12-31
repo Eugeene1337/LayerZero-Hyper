@@ -134,7 +134,7 @@ async def merkly_bridge(account_id, key):
         {"name": "opbnb", "amount": 1 * 10**18},
     ]
 
-    max_merk_amount_needed = sum(item['amount'] for item in chain_list) + 1
+    max_merk_amount_needed = sum(item['amount'] for item in chain_list) + 3
 
     await merkly.mint_merk_if_needed(max_merk_amount_needed)
 
