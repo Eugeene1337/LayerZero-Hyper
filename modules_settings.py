@@ -135,6 +135,8 @@ async def merkly_bridge(account_id, key):
         {"name": "opbnb", "amount": 1 * 10**18},
     ]
 
+    random.shuffle(chain_list)
+
     max_merk_amount_needed = sum(item['amount'] for item in chain_list) + random.randint(5, 10) * 10**18
 
     await merkly.mint_merk_if_needed(max_merk_amount_needed)
