@@ -64,6 +64,7 @@ class Stargate(Account):
         txn_hash = await self.send_raw_transaction(signed_txn)
 
         await self.wait_until_tx_finished(txn_hash.hex())
+    
 
 
     @retry
@@ -97,9 +98,13 @@ class Stargate(Account):
         gas_on_destination = self.w3.to_wei(gas_on_destination, 'ether')
         logger.info(f"[{self.account_id}][{self.address}] Stargate bridge {round(amount, 3)} {from_chain.title()} {from_token} -> {to_chain.title()} {to_token}")
 
+        initial_balance = await self.get_initial_balance(chain=to_chain, token_address=TOKEN_CONTRACTS[to_chain][to_token])
+
         await self.bridge_token(from_chain, to_chain, from_token, to_token, amount_wei, slippage, gas_on_destination)
 
-        await sleep(90, 120)
+        await self.wait_for_balance_update(chain=to_chain, initial_balance=initial_balance, token_address=TOKEN_CONTRACTS[to_chain][to_token])
+
+        await sleep(10, 20)
 
         if(gas_on_destination != 0):
             await sleep(20, 40)

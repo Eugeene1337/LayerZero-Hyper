@@ -1,5 +1,5 @@
 from loguru import logger
-from config import MERKLY_REFUEL_ABI, MERKLY_REFUEL_CONTRACTS, LAYERZERO_CHAINS_IDS, MERKLY_OFT_CONTRACTS, MERKLY_OFT_ABI
+from config import MERKLY_REFUEL_ABI, MERKLY_REFUEL_CONTRACTS, LAYERZERO_CHAINS_IDS, MERKLY_OFT_CONTRACTS, MERKLY_OFT_ABI, TOKEN_CONTRACTS
 from utils.helpers import retry
 from .account import Account
 from utils.sleeping import sleep
@@ -52,7 +52,7 @@ class Merkly(Account):
             logger.info(f"MERK balance is positive, continue to bridge")
         
 
-    async def get_gas_refuel(self, from_chain: str, to_chain: str, amount: int):
+    async def get_gas_refuel(self, from_chain: str, to_chain: str, amount: int, to_token: str):
         contract = self.get_contract(MERKLY_REFUEL_CONTRACTS[from_chain], MERKLY_REFUEL_ABI)
         
         adapter_params = await self.get_adapter_params(amount)
@@ -110,6 +110,7 @@ class Merkly(Account):
             from_chain: str,
             from_token: str,
             to_chain: str,
+            to_token: str,
             min_amount: float,
             max_amount: float,
             decimal: int,
@@ -131,6 +132,10 @@ class Merkly(Account):
         
         logger.info(f"[{self.account_id}][{self.address}] Merkly refuel {round(amount, 4)} {from_token} -> {to_chain.title()}")
         
-        await self.get_gas_refuel(from_chain, to_chain, amount_wei)
+        initial_balance = await self.get_initial_balance(chain=to_chain)
+
+        await self.get_gas_refuel(from_chain, to_chain, amount_wei, to_token)
+
+        await self.wait_for_balance_update(chain=to_chain, initial_balance=initial_balance)
 
         await sleep(5, 10)

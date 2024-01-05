@@ -79,7 +79,11 @@ class Sushiswap(Account):
         logger.info(
             f"[{self.account_id}][{self.address}] Sushiswap {round(amount, 3)} {from_token} -> {to_token} | {chain.title()} chain"
         )
-        
+
+        initial_balance = await self.get_initial_balance(chain=chain)
+
         await self.swap_tokens(chain, from_token, to_token, amount_wei)
+
+        await self.wait_for_balance_update(chain=chain, initial_balance=initial_balance)
 
         await sleep(15,30)

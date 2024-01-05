@@ -100,7 +100,7 @@ async def run_warmup(account_id, key):
 
 def main():
     module = get_module()
-    module_function = _async_run_route if module =="route" else _async_run_warmup
+    module_function = _async_run_route if module == "route" else _async_run_warmup
 
     wallets = get_wallets(module)
 
@@ -116,8 +116,6 @@ def main():
                 account.get("deposit_address", None)
             )
             time.sleep(random.randint(THREAD_SLEEP_FROM, THREAD_SLEEP_TO))
-
-
 
 if __name__ == '__main__':
     cprint(TITLE, TITLE_COLOR)

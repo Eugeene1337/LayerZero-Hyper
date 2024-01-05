@@ -97,8 +97,10 @@ class Pancake(Account):
             f"[{self.account_id}][{self.address}] Pancakeswap {round(amount, 4)} {from_token} -> {to_token} | BNB chain"
         )
 
-        await self.swap_to_token(from_token, to_token, amount_wei, slippage)
+        initial_balance = await self.get_initial_balance(chain="bsc", token_address=TOKEN_CONTRACTS["bsc"][to_token])
 
-        await self.wait_for_balance_change(TOKEN_CONTRACTS["bsc"][to_token], balance)
+        await self.swap_to_token(from_token, to_token, amount_wei, slippage)
+        
+        await self.wait_for_balance_update(chain="bsc", initial_balance=initial_balance, token_address=TOKEN_CONTRACTS["bsc"][to_token])
 
         await sleep(15,30)

@@ -1,3 +1,4 @@
+import random
 from modules import *
 
 
@@ -134,7 +135,7 @@ async def merkly_bridge(account_id, key):
         {"name": "opbnb", "amount": 1 * 10**18},
     ]
 
-    max_merk_amount_needed = sum(item['amount'] for item in chain_list) + 3
+    max_merk_amount_needed = sum(item['amount'] for item in chain_list) + random.randint(5, 10) * 10**18
 
     await merkly.mint_merk_if_needed(max_merk_amount_needed)
 
@@ -161,6 +162,7 @@ async def merkly_gas_refuel(account_id, key):
     from_chain = "gnosis"
     from_token = "xDAI"
     to_chain = "celo"
+    to_token = "celo"
 
     min_amount = 0.25
     max_amount = 0.3
@@ -172,13 +174,14 @@ async def merkly_gas_refuel(account_id, key):
     max_percent = 10
 
     merkly = Merkly(account_id, key, from_chain)
-    await merkly.gas_refuel(from_chain, from_token, to_chain, min_amount, max_amount, decimal, all_amount, min_percent, max_percent)
+    await merkly.gas_refuel(from_chain, from_token, to_chain, to_token, min_amount, max_amount, decimal, all_amount, min_percent, max_percent)
 
 
 async def merkly_gas_refuel_warmup(account_id, key):
     from_chain = "polygon"
     from_token = "MATIC"
     to_chain = "celo"
+    to_token = "celo"
 
     min_amount = 0.03
     max_amount = 0.04
@@ -189,4 +192,4 @@ async def merkly_gas_refuel_warmup(account_id, key):
     max_percent = 1
 
     merkly = Merkly(account_id, key, from_chain)
-    await merkly.gas_refuel(from_chain, from_token, to_chain, min_amount, max_amount, decimal, all_amount, min_percent, max_percent)
+    await merkly.gas_refuel(from_chain, from_token, to_chain, to_token, min_amount, max_amount, decimal, all_amount, min_percent, max_percent)

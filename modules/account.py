@@ -66,18 +66,45 @@ class Account:
 
         return {"balance_wei": balance_wei, "balance": balance, "symbol": symbol, "decimal": decimal}
     
-    async def wait_for_balance_change(self, contract_address: str, initial_balance: int,timeout: int = 300, check_interval: int = 3):
-        start_time = asyncio.get_event_loop().time()
+    async def get_initial_balance(self, chain, token_address=None):
+        w3 = AsyncWeb3(
+            AsyncWeb3.AsyncHTTPProvider(random.choice(RPC[chain]["rpc"])),
+            middlewares=[async_geth_poa_middleware],
+            request_kwargs={}
+        )
 
-        while (asyncio.get_event_loop().time() - start_time) < timeout:
-            await asyncio.sleep(check_interval)
-            current_balance = await self.get_balance(contract_address)
+        if token_address:
+            contract_address = self.w3.to_checksum_address(token_address)
+            contract = w3.eth.contract(address=contract_address, abi=ERC20_ABI)
+            initial_balance = await contract.functions.balanceOf(self.address).call()
+        else:
+            initial_balance = await w3.eth.get_balance(self.address)
 
-            if current_balance['balance'] != initial_balance:
-                return current_balance
+        return initial_balance
 
-        print("Timeout reached without balance change.")
-        return None
+    async def wait_for_balance_update(self, chain, initial_balance, token_address=None):
+        w3 = AsyncWeb3(
+            AsyncWeb3.AsyncHTTPProvider(random.choice(RPC[chain]["rpc"])),
+            middlewares=[async_geth_poa_middleware],
+            request_kwargs={}
+        )
+
+        if token_address:
+            contract_address = self.w3.to_checksum_address(token_address)
+            contract = w3.eth.contract(address=contract_address, abi=ERC20_ABI)
+        
+        logger.info(f"Ждем изменение баланса в сети {chain}...")
+
+        while True:
+            time.sleep(10)
+
+            if token_address:
+                current_balance = await contract.functions.balanceOf(self.address).call()
+            else:
+                current_balance = await w3.eth.get_balance(self.address)
+
+            if current_balance != initial_balance:
+                break
     
 
     async def get_amount(

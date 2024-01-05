@@ -23,8 +23,9 @@ class Angle(Account):
 
     async def bridge(self, from_chain: str, to_chain: str, amount: int):
         l0_fee = await self.get_l0_fee(to_chain, amount)
+        token_address = TOKEN_CONTRACTS[from_chain]["agEUR"]
 
-        await self.approve(amount, TOKEN_CONTRACTS[from_chain]["agEUR"], self.bridge_contract.address)
+        await self.approve(amount, token_address, self.bridge_contract.address)
         
         tx_data = await self.get_tx_data(l0_fee)
         if from_chain == "bsc":
@@ -44,7 +45,7 @@ class Angle(Account):
         txn_hash = await self.send_raw_transaction(signed_txn)
 
         await self.wait_until_tx_finished(txn_hash.hex())
-
+        
 
     @retry
     async def bridge_ageur(
@@ -68,8 +69,13 @@ class Angle(Account):
             min_percent,
             max_percent
         )
+
         logger.info(f"[{self.account_id}][{self.address}] Angle bridge {round(amount, 3)} agEUR {from_chain.title()} -> {to_chain.title()}")
+
+        initial_balance = await self.get_initial_balance(chain=to_chain, token_address=TOKEN_CONTRACTS[to_chain]["agEUR"])
 
         await self.bridge(from_chain, to_chain, amount_wei)
 
-        await sleep(90, 120)
+        await self.wait_for_balance_update(chain=to_chain, initial_balance=initial_balance, token_address=TOKEN_CONTRACTS[to_chain]["agEUR"])
+
+        await sleep(10, 20)
