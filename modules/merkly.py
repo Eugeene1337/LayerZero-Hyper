@@ -117,6 +117,7 @@ class Merkly(Account):
             all_amount: bool,
             min_percent: int,
             max_percent: int,
+            route: bool,
     ):
         
         amount_wei, amount, balance = await self.get_amount(
@@ -136,6 +137,7 @@ class Merkly(Account):
 
         await self.get_gas_refuel(from_chain, to_chain, amount_wei, to_token)
 
-        await self.wait_for_balance_update(chain=to_chain, initial_balance=initial_balance)
+        if route:
+            await self.wait_for_balance_update(chain=to_chain, initial_balance=initial_balance)
 
         await sleep(5, 10)

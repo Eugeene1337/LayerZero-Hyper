@@ -176,7 +176,7 @@ async def merkly_gas_refuel(account_id, key):
     max_percent = 10
 
     merkly = Merkly(account_id, key, from_chain)
-    await merkly.gas_refuel(from_chain, from_token, to_chain, to_token, min_amount, max_amount, decimal, all_amount, min_percent, max_percent)
+    await merkly.gas_refuel(from_chain, from_token, to_chain, to_token, min_amount, max_amount, decimal, all_amount, min_percent, max_percent, True)
 
 
 async def merkly_gas_refuel_warmup(account_id, key):
@@ -194,4 +194,4 @@ async def merkly_gas_refuel_warmup(account_id, key):
     max_percent = 1
 
     merkly = Merkly(account_id, key, from_chain)
-    await merkly.gas_refuel(from_chain, from_token, to_chain, to_token, min_amount, max_amount, decimal, all_amount, min_percent, max_percent)
+    await merkly.gas_refuel(from_chain, from_token, to_chain, to_token, min_amount, max_amount, decimal, all_amount, min_percent, max_percent, False)
