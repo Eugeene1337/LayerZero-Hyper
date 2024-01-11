@@ -22,7 +22,7 @@ class Merkly(Account):
         except Exception as error:
             logger.error(error)
 
-
+    @retry
     async def mint_merk_if_needed(self, merk_needed: int):
         balance = await self.get_balance(MERKLY_OFT_CONTRACTS[self.chain])
         balance_wei = balance['balance_wei']
