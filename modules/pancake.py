@@ -103,4 +103,4 @@ class Pancake(Account):
         
         await self.wait_for_balance_update(chain="bsc", initial_balance=initial_balance, token_address=TOKEN_CONTRACTS["bsc"][to_token])
 
-        await sleep(15,30)
+        await sleep(45,60)
