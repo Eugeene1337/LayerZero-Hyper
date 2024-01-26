@@ -7,8 +7,8 @@ async def pancake_swap_bnb_usdt(account_id, key):
     to_token = "USDT"
 
     all_amount = True
-    min_percent = 95
-    max_percent = 96
+    min_percent = 93
+    max_percent = 93
 
     min_amount = 0
     max_amount = 0
