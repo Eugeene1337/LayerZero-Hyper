@@ -133,6 +133,12 @@ class Merkly(Account):
         
         logger.info(f"[{self.account_id}][{self.address}] Merkly refuel {round(amount, 4)} {from_token} -> {to_chain.title()}")
         
+        from_balance = await self.get_initial_balance(chain=from_chain)
+        while from_balance==0 and from_chain=='gnosis':
+            logger.info(f"[{self.account_id}][{self.address}] {from_chain} native token balance is 0, waiting for balance change...")
+            await sleep(45, 60)
+            from_balance = await self.get_initial_balance(chain=from_chain)
+        
         initial_balance = await self.get_initial_balance(chain=to_chain)
 
         await self.get_gas_refuel(from_chain, to_chain, amount_wei, to_token)
