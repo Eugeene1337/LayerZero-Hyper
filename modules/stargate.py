@@ -98,6 +98,16 @@ class Stargate(Account):
         gas_on_destination = self.w3.to_wei(gas_on_destination, 'ether')
         logger.info(f"[{self.account_id}][{self.address}] Stargate bridge {round(amount, 3)} {from_chain.title()} {from_token} -> {to_chain.title()} {to_token}")
 
+        from_balance = await self.get_initial_balance(chain=from_chain, token_address=TOKEN_CONTRACTS[from_chain][from_token])
+        retry = 0
+        while from_balance==0:
+            if retry==5:
+                return
+            logger.info(f"[{self.account_id}][{self.address}] {from_chain} {from_token} token balance is 0, waiting for balance change...")
+            await sleep(15, 45)
+            from_balance = await self.get_initial_balance(chain=from_chain, token_address=TOKEN_CONTRACTS[from_chain][from_token])
+            retry+=1
+
         initial_balance = await self.get_initial_balance(chain=to_chain, token_address=TOKEN_CONTRACTS[to_chain][to_token])
 
         await self.bridge_token(from_chain, to_chain, from_token, to_token, amount_wei, slippage, gas_on_destination)
