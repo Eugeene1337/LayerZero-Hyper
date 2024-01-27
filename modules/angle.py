@@ -76,13 +76,14 @@ class Angle(Account):
         retry = 0
         while from_balance==0:
             if retry==5:
-                break
+                return
             logger.info(f"[{self.account_id}][{self.address}] {from_chain} agEUR balance is 0, waiting for balance change...")
-            await sleep(15, 45)
+            await sleep(1, 2)
+            from_balance = await self.get_initial_balance(chain=from_chain, token_address=TOKEN_CONTRACTS[from_chain]["agEUR"])
             retry+=1
 
         initial_balance = await self.get_initial_balance(chain=to_chain, token_address=TOKEN_CONTRACTS[to_chain]["agEUR"])
-
+    
         await self.bridge(from_chain, to_chain, amount_wei)
 
         await self.wait_for_balance_update(chain=to_chain, initial_balance=initial_balance, token_address=TOKEN_CONTRACTS[to_chain]["agEUR"])

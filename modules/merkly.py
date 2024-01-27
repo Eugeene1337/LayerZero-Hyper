@@ -140,6 +140,7 @@ class Merkly(Account):
                 break
             logger.info(f"[{self.account_id}][{self.address}] {from_chain} native token balance is 0, waiting for balance change...")
             await sleep(45, 60)
+            from_balance = await self.get_initial_balance(chain=from_chain)
             retry+=1
 
         initial_balance = await self.get_initial_balance(chain=to_chain)
