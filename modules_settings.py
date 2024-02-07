@@ -150,7 +150,7 @@ async def merkly_bridge(account_id, key):
 async def bungee_refuel(account_id, key):
     bungee = Bungee(account_id, key)
     chain_list = [
-        {"name": "GNOSIS", "amount": 0.003},
+        {"name": "GNOSIS", "amount": 0.005},
         {"name": "POLYGON", "amount": 0.001}
     ]
     for item in chain_list:
